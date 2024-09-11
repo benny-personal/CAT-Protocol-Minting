@@ -26,7 +26,7 @@ nodeSelector:
 
 1. 下载已经提前准备好各种环境的 image, 并进入 container
 
-`docker run -it jinbangyi/cat-token-box-tools:v0.0.2 /bin/bash`
+`docker run -it jinbangyi/cat-token-box-tools:v0.0.4 /bin/bash`
 
 2. 修改 `config.json` 文件
 
@@ -35,12 +35,14 @@ nodeSelector:
 - `"tracker": "https://cat-token-box.example.com"`
 - `"url": "https://bitcoind-fractal.example.com"`
 
+需要注意的是 maxFeeRate 默认设置的是 1500, 如果链上拥堵需要手动调高
+
 ```json
 {
   "network": "fractal-mainnet",
   "tracker": "https://cat-token-box.example.com",
   "dataDir": ".",
-  "maxFeeRate": 1000,
+  "maxFeeRate": 1500,
   "rpc": {
       "url": "https://bitcoind-fractal.example.com",
       "username": "bitcoin",
@@ -49,13 +51,25 @@ nodeSelector:
 }
 ```
 
-3. 创建钱包
+1. 创建钱包
 
 `yarn cli wallet create`
 
 4. 将创建好的钱包导入 UniSat
 
-`cat wallet.json` `"mnemonic"` 后面内容为助记词
+`cat wallet.json`
+
+output example
+
+```json
+{
+  "accountPath": "m/86'/0'/0'/0/0",
+  "name": "cat-f0848020",
+  "mnemonic": "a b c d e f g h i g k l"
+}
+```
+
+`"mnemonic"` 后面内容为助记词
 
 [钱包导入 UniSat](钱包导入UniSat.md)
 
@@ -80,7 +94,7 @@ nodeSelector:
 
 如果你不小心关闭了 Docker, 没有关系。
 
-重新执行 `准备运行环境` 里的步骤1与步骤2
+重新执行 [准备运行环境](#准备运行环境) 里的步骤 1 与步骤 2
 
 之后创建文件 `wallet.json`, 将 mnemonic 后的内容改为你助记词即可
 
