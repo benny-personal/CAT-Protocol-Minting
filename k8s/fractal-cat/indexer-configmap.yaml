@@ -1,0 +1,20 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: indexer
+data:
+  DATABASE_TYPE: postgres
+  DATABASE_HOST: postgres-fractal.default
+  DATABASE_PORT: '5432'
+  DATABASE_DB: fractal-cat
+  DATABASE_USERNAME: postgres
+  DATABASE_PASSWORD: postgres
+
+  RPC_HOST: bitcoind-fractal.default
+  RPC_PORT: '8332'
+  RPC_USER: bitcoin
+  RPC_PASSWORD: opcatAwesome
+
+  NETWORK: mainnet
+  API_PORT: '3000'
+  GENESIS_BLOCK_HEIGHT: '0'

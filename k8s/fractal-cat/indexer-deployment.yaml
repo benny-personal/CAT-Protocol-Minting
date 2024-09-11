@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: indexer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: indexer
+  template:
+    metadata:
+      labels:
+        app: indexer
+    spec:
+      containers:
+      - name: indexer
+        image: jinbangyi/cat-token-box:v0.0.1
+        envFrom:
+        - configMapRef:
+            name: indexer-fractal
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        resources:
+          limits:
+            memory: "4Gi"
+      # nodeSelector: 
+      #   kubernetes.io/hostname: xx
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: indexer
+spec:
+  ports:
+  - port: 3000
+    name: http
+    targetPort: 3000
+  selector:
+    app: indexer

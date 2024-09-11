@@ -1,0 +1,38 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+nameSuffix: "-fractal"
+
+commonLabels:
+  bonus.com/instance: fractal
+  bonus.com/managed-tools: kustomize
+  bonus.com/version: 0.0.1
+
+resources:
+  - ./bitcoind-deployment.yaml
+  - ./bitcoind-pvc.yaml
+  - ./postgres-pvc.yaml
+  - ./postgres-deployment.yaml
+  - ./postgres-secret.yaml
+  - ./bitcoind-configmap.yaml
+  - ./indexer-configmap.yaml
+  - ./indexer-deployment.yaml
+  - ./indexer-router.yaml
+
+patches:
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /spec/template/spec
+        value: 
+          nodeSelector: 
+            kubernetes.io/hostname: TODO
+  - target:
+      kind: ApisixRoute
+    patch: |-
+      - op: replace
+        path: /spec/name/match/hosts
+        value: 
+        - example.com TODO

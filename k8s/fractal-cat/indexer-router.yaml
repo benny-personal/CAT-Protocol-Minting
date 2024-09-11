@@ -1,0 +1,35 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: indexer
+spec:
+  http:
+  - name: default
+    match:
+      hosts:
+      - cat-token-box.example.com
+      paths:
+      - /*
+    backends:
+      - serviceName: indexer-fractal
+        servicePort: http
+        resolveGranularity: service
+
+---
+
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: bitcoind
+spec:
+  http:
+  - name: default
+    match:
+      hosts:
+      - bitcoind-fractal.example.com
+      paths:
+      - /*
+    backends:
+      - serviceName: bitcoind-fractal
+        servicePort: http2
+        resolveGranularity: service

@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoind
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitcoind
+  template:
+    metadata:
+      labels:
+        app: bitcoind
+    spec:
+      containers:
+      - name: bitcoind
+        image: fractalbitcoin/fractal:v0.2.1
+        command: ["bitcoind", "-datadir=/data/", "-maxtipage=504576000"]
+        ports:
+        - containerPort: 8330
+          protocol: TCP
+        - containerPort: 8331
+          protocol: TCP
+        - containerPort: 8332
+          protocol: TCP
+        - containerPort: 8333
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /data/bitcoin.conf
+          subPath: bitcoin.conf
+        resources:
+          limits:
+            memory: "8Gi"
+        livenessProbe:
+          exec:
+            command: ["bitcoin-cli", "-datadir=/data/", "getblockchaininfo"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      # nodeSelector: 
+      #   kubernetes.io/hostname: xx
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: bitcoind-data-pvc
+      - name: config
+        configMap:
+          name: bitcoind-fractal
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bitcoind
+spec:
+  ports:
+  - port: 8330
+    name: http
+    targetPort: 8330
+  - port: 8331
+    name: http1
+    targetPort: 8331
+  - port: 8332
+    name: http2
+    targetPort: 8332
+  - port: 8333
+    name: http3
+    targetPort: 8333
+  selector:
+    app: bitcoind
